@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses | LMS Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .page-header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .page-header-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .empty-state-container {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 1rem;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .empty-state-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        .course-card:hover {
+            transform: translateY(-12px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .course-card-banner {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05));
+        }
+
+        .course-card-body {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .course-card-meta {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-card-actions {
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .course-card-actions .btn {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .enroll-form {
+            width: 100%;
+        }
+
+        .enroll-form button {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Courses', content=~{::#content})}">
+        <div id="content">
+            <!-- Page Header -->
+            <div class="page-header-section" sec:authorize="hasRole('TEACHER')">
+                <h1 class="page-header-title">📚 Manage Your Courses</h1>
+                <a th:href="@{/courses/create}" class="btn btn-primary">+ Create New Course</a>
+            </div>
+
+            <div class="page-header-section" sec:authorize="hasRole('STUDENT')">
+                <h1 class="page-header-title">📚 Available Courses</h1>
+            </div>
+            
+            <!-- No Courses -->
+            <div th:if="${courses.isEmpty()}" class="empty-state-container">
+                <div class="empty-state-icon">📚</div>
+                <h2 class="empty-state-title">No Courses Available</h2>
+                <p class="empty-state-description" sec:authorize="hasRole('TEACHER')">You haven't created any courses yet. Start by creating your first course to begin teaching.</p>
+                <p class="empty-state-description" sec:authorize="hasRole('STUDENT')">There are no courses available at the moment. Check back later!</p>
+                <a th:href="@{/courses/create}" class="btn btn-primary" sec:authorize="hasRole('TEACHER')">Create Your First Course</a>
+            </div>
+            
+            <!-- Courses Grid -->
+            <div th:if="${not #lists.isEmpty(courses)}" class="courses-grid">
+                <div th:each="course, stat : ${courses}" class="course-card" th:classappend="'delay-' + ${((stat.index mod 6) + 1)}">
+                    <div class="course-card-banner"
+                        th:style="${(stat.index % 5 == 0) ? 'background: linear-gradient(135deg, #6366f1, #818cf8)' : 
+                                 (stat.index % 5 == 1) ? 'background: linear-gradient(135deg, #ec4899, #f472b6)' :
+                                 (stat.index % 5 == 2) ? 'background: linear-gradient(135deg, #10b981, #34d399)' :
+                                 (stat.index % 5 == 3) ? 'background: linear-gradient(135deg, #f59e0b, #fbbf24)' :
+                                 'background: linear-gradient(135deg, #06b6d4, #22d3ee)'}">
+                        <span th:text="${#strings.substring(course.title, 0, 1).toUpperCase()}">C</span>
+                    </div>
+                    <div class="course-card-body">
+                        <h3 class="course-card-title" th:text="${course.title}">Course Title</h3>
+                        <div class="course-card-meta">
+                            <span>👨‍🏫</span>
+                            <span th:text="${course.teacher != null ? course.teacher.name : 'TBA'}">Teacher</span>
+                        </div>
+                        <div class="course-card-meta">
+                            <span>⏱️</span>
+                            <span th:text="${course.duration}">Duration</span>
+                        </div>
+                        <div class="course-card-meta">
+                            <span>👥</span>
+                            <span th:text="'Students: ' + (${course.students != null ? course.students.size() : 0})">Students</span>
+                        </div>
+                        
+                        <!-- Student Enroll -->
+                        <div sec:authorize="hasRole('STUDENT')" style="margin-top: auto; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                            <div th:if="${course.students.?[id == #authentication.principal.id].isEmpty()}">
+                                <form th:action="@{/enrollments/enroll}" method="post" class="enroll-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <input type="hidden" name="courseId" th:value="${course.id}">
+                                    <button type="submit" class="btn btn-primary w-100">Enroll Now</button>
+                                </form>
+                            </div>
+                            <div th:if="${not course.students.?[id == #authentication.principal.id].isEmpty()}">
+                                <button class="btn btn-outline w-100" disabled>Enrolled ✓</button>
+                            </div>
+                        </div>
+                        
+                        <!-- View / Assignments buttons -->
+                        <div class="course-card-actions" th:unless="${#authentication.principal.role == 'STUDENT' and course.students.?[id == #authentication.principal.id].isEmpty()}">
+                            <a th:href="@{/courses/{id}(id=${course.id})}" class="btn btn-outline">View</a>
+                            <a th:href="@{/assignments?courseId={id}(id=${course.id})}" class="btn btn-outline">Assignments</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | LMS Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        body { background: var(--bg); }
+        .hero { text-align: center; padding: 3rem 1rem; color: white; background: linear-gradient(135deg, #4F46E5, #7C3AED); border-radius: var(--radius); animation: fadeInUp 0.6s ease; }
+        .hero h1 { font-size: 36px; margin-bottom: 1rem; }
+        .hero p { font-size: 18px; margin-bottom: 2rem; opacity: 0.9; }
+        .hero .btn { margin: 0 0.5rem; }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Home', content=~{::#content})}">
+        <div id="content">
+            <div class="hero">
+                <h1>Welcome to LMS Portal</h1>
+                <p>Your complete learning management system</p>
+                <a th:href="@{/courses}" class="btn btn-primary">Explore Courses</a>
+                <a th:href="@{/login}" class="btn btn-outline" sec:authorize="!isAuthenticated()">Sign In</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

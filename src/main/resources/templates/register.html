@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | LMS Portal</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            margin: 0;
+        }
+        
+        .register-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border-radius: var(--radius-2xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            animation: slideInUp 0.6s ease-out;
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        .register-brand {
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .register-brand::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .register-brand-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .register-brand-icon {
+            font-size: 56px;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .register-brand h2 {
+            font-size: 32px;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .register-brand p {
+            font-size: 15px;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+        
+        .register-brand-features {
+            text-align: left;
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 2;
+            list-style: none;
+            padding: 0;
+        }
+        
+        .register-brand-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .register-brand-features i {
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+        
+        .register-form-container {
+            background: white;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        
+        .register-form-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .register-form-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem;
+            font-size: 14px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+        
+        .btn-register {
+            width: 100%;
+            padding: 0.85rem;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            background: linear-gradient(135deg, var(--accent) 0%, #0891b2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(6, 182, 212, 0.3);
+        }
+        
+        .register-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .register-footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .register-footer a:hover {
+            color: #0891b2;
+            text-decoration: underline;
+        }
+        
+        .alert {
+            margin-bottom: 1rem;
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        .form-error {
+            color: var(--danger);
+            font-size: 12px;
+            margin-top: 0.25rem;
+        }
+        
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            background: #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength.weak {
+            background: #ef4444;
+            width: 33%;
+        }
+        
+        .password-strength.medium {
+            background: #f59e0b;
+            width: 66%;
+        }
+        
+        .password-strength.strong {
+            background: #10b981;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .register-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .register-brand {
+                padding: 2.5rem 2rem;
+                min-height: 250px;
+            }
+            
+            .register-form-container {
+                padding: 2rem;
+            }
+            
+            .register-brand h2 {
+                font-size: 24px;
+            }
+            
+            .register-form-title {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Brand Panel -->
+        <div class="register-brand">
+            <div class="register-brand-content">
+                <div class="register-brand-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h2>LMS Portal</h2>
+                <p>Join Our Community</p>
+                <ul class="register-brand-features">
+                    <li><i class="fas fa-check-circle"></i> Create your profile</li>
+                    <li><i class="fas fa-check-circle"></i> Choose your role</li>
+                    <li><i class="fas fa-check-circle"></i> Start learning today</li>
+                    <li><i class="fas fa-check-circle"></i> Access exclusive content</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Form Panel -->
+        <div class="register-form-container">
+            <div class="register-form-title">Create Account</div>
+            <div class="register-form-subtitle">Join LMS Portal today and start your learning journey</div>
+            
+            <!-- Error Messages -->
+            <div th:if="${param.error}" class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <div th:text="${param.error}">Error occurred.</div>
+            </div>
+            <div th:if="${error}" class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <div th:text="${error}">Error occurred.</div>
+            </div>
+            
+            <!-- Success Message -->
+            <div th:if="${successMessage}" class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <div th:text="${successMessage}"></div>
+            </div>
+            
+            <form th:action="@{/register}" th:object="${user}" method="post" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="name">
+                        <i class="fas fa-user"></i> Full Name
+                    </label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Enter your full name" required>
+                    <div class="form-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        <i class="fas fa-envelope"></i> Email Address
+                    </label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Enter your email" required>
+                    <div class="form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Enter a strong password" required>
+                    <div class="password-strength weak" id="passwordStrength"></div>
+                    <div class="form-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="role">
+                        <i class="fas fa-user-tag"></i> Select Role
+                    </label>
+                    <select id="role" th:field="*{role}" class="form-select" required>
+                        <option value="">-- Choose Role --</option>
+                        <option value="STUDENT">Student</option>
+                        <option value="TEACHER">Teacher</option>
+                    </select>
+                    <div class="form-error" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+                </div>
+                
+                <button type="submit" class="btn btn-register">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            
+            <div class="register-footer">
+                Already have an account? <a th:href="@{/login}"><i class="fas fa-sign-in-alt"></i> Sign in here</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function(e) {
+            const strength = document.getElementById('passwordStrength');
+            const password = e.target.value;
+            
+            if (password.length < 6) {
+                strength.className = 'password-strength weak';
+            } else if (password.length < 10) {
+                strength.className = 'password-strength medium';
+            } else {
+                strength.className = 'password-strength strong';
+            }
+        });
+    </script>
+</body>
+</html>

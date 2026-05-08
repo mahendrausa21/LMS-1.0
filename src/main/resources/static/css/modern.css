@@ -1,0 +1,747 @@
+/* ========================================
+   MODERN FRONTEND - PROFESSIONAL DESIGN SYSTEM
+   Inspired by Freepik, Dribble premium templates
+   ======================================== */
+
+:root {
+    /* Modern Color Palette */
+    --primary: #5B21B6;
+    --primary-light: #7C3AED;
+    --primary-dark: #4C1D95;
+    --secondary: #0891B2;
+    --accent: #F59E0B;
+    --success: #10B981;
+    --error: #DC2626;
+    --warning: #F59E0B;
+    --info: #3B82F6;
+    
+    /* Neutral Colors */
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --text-light: #9CA3AF;
+    --text-muted: #D1D5DB;
+    
+    /* Backgrounds */
+    --bg-white: #FFFFFF;
+    --bg-light: #F9FAFB;
+    --bg-lighter: #F3F4F6;
+    --bg-dark: #1F2937;
+    
+    /* Borders */
+    --border-light: #E5E7EB;
+    --border-medium: #D1D5DB;
+    
+    /* Shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, #5B21B6 0%, #7C3AED 100%);
+    --gradient-secondary: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
+    --gradient-accent: linear-gradient(135deg, #F59E0B 0%, #FCA5A5 100%);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    color: var(--text-primary);
+    background: var(--bg-light);
+    line-height: 1.6;
+}
+
+/* ========================================
+   MODERN ANIMATIONS
+   ======================================== */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========================================
+   MODERN HEADER/NAVBAR
+   ======================================== */
+
+.modern-header {
+    background: var(--bg-white);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    animation: slideDown 0.3s ease-out;
+}
+
+.header-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-nav {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.header-nav-item a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.header-nav-item a:hover {
+    color: var(--primary);
+}
+
+.header-nav-item a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.header-nav-item a:hover::after {
+    width: 100%;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* ========================================
+   MODERN BUTTONS
+   ======================================== */
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.btn:active {
+    transform: translateY(2px);
+}
+
+/* Primary Button */
+.btn-primary {
+    background: var(--gradient-primary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(91, 33, 182, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(91, 33, 182, 0.4);
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background: var(--gradient-secondary);
+    color: white;
+    box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(8, 145, 178, 0.4);
+}
+
+/* Outline Button */
+.btn-outline {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+
+.btn-outline:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Ghost Button */
+.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-light);
+}
+
+.btn-ghost:hover {
+    background: var(--bg-lighter);
+    color: var(--text-primary);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.05rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========================================
+   MODERN FORMS
+   ======================================== */
+
+.form-wrapper {
+    background: var(--bg-white);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.4s ease-out;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+}
+
+.form-section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.form-section-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.form-label-required::after {
+    content: '*';
+    color: var(--error);
+    margin-left: 0.25rem;
+}
+
+.form-control,
+.form-textarea,
+.form-select {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid var(--border-light);
+    border-radius: 0.75rem;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    background: var(--bg-white);
+}
+
+.form-control:focus,
+.form-textarea:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(91, 33, 182, 0.1);
+    background: var(--bg-white);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: inherit;
+}
+
+.form-hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+.form-error {
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.form-success {
+    color: var(--success);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+/* ========================================
+   FILE UPLOAD ZONE
+   ======================================== */
+
+.upload-zone {
+    border: 2px dashed var(--border-medium);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-lighter);
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-zone:hover {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(91, 33, 182, 0.02), rgba(124, 58, 237, 0.02));
+}
+
+.upload-zone.dragover {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(91, 33, 182, 0.05), rgba(124, 58, 237, 0.05));
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+}
+
+.upload-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.upload-subtext {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.upload-input {
+    display: none;
+}
+
+.file-preview {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--bg-lighter);
+    border-radius: 0.75rem;
+    display: none;
+    animation: slideUp 0.3s ease-out;
+}
+
+.file-preview.show {
+    display: block;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: var(--bg-white);
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-item-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.file-item-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--gradient-primary);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.file-item-details {
+    flex: 1;
+}
+
+.file-item-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+.file-item-size {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.file-item-remove {
+    background: none;
+    border: none;
+    color: var(--error);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.file-item-remove:hover {
+    color: var(--error);
+    transform: scale(1.1);
+}
+
+/* File upload progress */
+.upload-progress {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--bg-lighter);
+    border-radius: 0.75rem;
+    display: none;
+}
+
+.upload-progress.show {
+    display: block;
+    animation: slideUp 0.3s ease-out;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: var(--border-light);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--gradient-primary);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 3px;
+}
+
+.progress-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+/* ========================================
+   MODERN CARDS
+   ======================================== */
+
+.card {
+    background: var(--bg-white);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+    transition: all 0.3s ease;
+    animation: slideUp 0.4s ease-out;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.card-body {
+    color: var(--text-secondary);
+}
+
+.card-footer {
+    border-top: 1px solid var(--border-light);
+    padding-top: 1rem;
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+/* ========================================
+   ALERTS
+   ======================================== */
+
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    animation: slideDown 0.3s ease-out;
+    border-left: 4px solid;
+}
+
+.alert-success {
+    background: #ECFDF5;
+    color: #065F46;
+    border-left-color: var(--success);
+}
+
+.alert-error {
+    background: #FEE2E2;
+    color: #7F1D1D;
+    border-left-color: var(--error);
+}
+
+.alert-warning {
+    background: #FEF3C7;
+    color: #78350F;
+    border-left-color: var(--warning);
+}
+
+.alert-info {
+    background: #DBEAFE;
+    color: #0C2340;
+    border-left-color: var(--info);
+}
+
+.alert-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1.25rem;
+    margin-left: auto;
+}
+
+/* ========================================
+   GRID LAYOUTS
+   ======================================== */
+
+.grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-muted {
+    color: var(--text-secondary);
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+.mt-5 { margin-top: 3rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+.mb-5 { margin-bottom: 3rem; }
+
+.p-1 { padding: 0.5rem; }
+.p-2 { padding: 1rem; }
+.p-3 { padding: 1.5rem; }
+.p-4 { padding: 2rem; }
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+    .modern-header {
+        padding: 1rem;
+    }
+
+    .header-nav {
+        gap: 1rem;
+    }
+
+    .form-wrapper {
+        padding: 1.5rem;
+    }
+
+    .grid-2, .grid-3, .grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .btn {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .header-nav {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .upload-zone {
+        padding: 1.5rem;
+    }
+
+    .alert {
+        flex-direction: column;
+    }
+}

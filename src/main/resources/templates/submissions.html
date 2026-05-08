@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submissions | LMS Portal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .submissions-header {
+            margin-bottom: 2rem;
+        }
+
+        .submissions-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .submissions-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .upload-section, .submissions-list-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+        }
+
+        .upload-zone:hover {
+            border-color: #4338ca;
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .upload-zone.dragover {
+            border-color: #4338ca;
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .upload-zone-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-zone-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .upload-zone-highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .submission-form {
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submissions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .submissions-table thead {
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .submissions-table thead th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submissions-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .submissions-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .submission-file-name {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .submission-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .submission-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .submission-actions .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 1024px) {
+            .submissions-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .submissions-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .upload-zone {
+                padding: 1.5rem;
+            }
+
+            .submissions-table {
+                font-size: 0.85rem;
+            }
+
+            .submissions-table thead th,
+            .submissions-table tbody td {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Submissions', content=~{::#content})}">
+        <div id="content">
+            <!-- Header -->
+            <div class="submissions-header">
+                <h1>📤 Assignment Submissions</h1>
+            </div>
+
+            <!-- Upload & Submissions Grid -->
+            <div class="submissions-layout">
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <h2 class="section-title">
+                        <span>📁</span>
+                        New Submission
+                    </h2>
+
+                    <form method="post" th:action="@{/submissions/upload}" enctype="multipart/form-data" class="submission-form">
+                        <!-- Assignment Selection -->
+                        <div class="form-group">
+                            <label for="assignment">Select Assignment</label>
+                            <select id="assignment" name="assignmentId" required>
+                                <option value="">-- Choose an assignment --</option>
+                                <option th:each="assignment : ${assignments}" 
+                                        th:value="${assignment.id}"
+                                        th:text="${assignment.title}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Upload Zone -->
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-zone-icon">📎</div>
+                            <div class="upload-zone-text">
+                                <p>Drag and drop your file here or <span class="upload-zone-highlight">click to browse</span></p>
+                                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Max file size: 10MB</p>
+                            </div>
+                            <input type="file" id="fileInput" name="file" required accept=".pdf,.doc,.docx,.txt,.jpg,.png,.zip">
+                        </div>
+
+                        <!-- Optional Notes -->
+                        <div class="form-group">
+                            <label for="notes">Notes (Optional)</label>
+                            <textarea id="notes" name="notes" placeholder="Add any notes about your submission..."></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            ✓ Submit Assignment
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Submissions List Section -->
+                <div class="submissions-list-section">
+                    <h2 class="section-title">
+                        <span>📋</span>
+                        Your Submissions
+                    </h2>
+
+                    <div th:if="${submissions != null and !submissions.isEmpty()}">
+                        <table class="submissions-table">
+                            <thead>
+                                <tr>
+                                    <th>Assignment</th>
+                                    <th>Submitted</th>
+                                    <th>File</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="submission : ${submissions}">
+                                    <td th:text="${submission.assignment?.title}"></td>
+                                    <td class="submission-date" th:text="${#temporals.format(submission.submittedDate, 'MMM dd, yyyy HH:mm')}"></td>
+                                    <td class="submission-file-name" th:text="${submission.filePath.substring(submission.filePath.lastIndexOf('/') + 1)}"></td>
+                                    <td class="submission-actions">
+                                        <a th:href="@{/submissions/download/{id}(id=${submission.id})}" class="btn btn-outline" title="Download">
+                                            📥
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div th:if="${submissions == null or submissions.isEmpty()}" class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No submissions yet. Upload your first submission above!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+
+        // Click to upload
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+        });
+
+        // File input change
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                uploadZone.style.borderColor = 'var(--success-color)';
+                uploadZone.style.background = 'rgba(16, 185, 129, 0.05)';
+            }
+        });
+    </script>
+</body>
+</html>

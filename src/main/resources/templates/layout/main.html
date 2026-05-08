@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      th:fragment="layout(title, content)"
+      lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | LMS Portal'">LMS Portal</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">📚</div>
+                <div>
+                    <div class="sidebar-logo-text">LMS</div>
+                    <div class="sidebar-logo-sub">Portal</div>
+                </div>
+            </div>
+            
+            <!-- Student Navigation -->
+            <div sec:authorize="hasRole('STUDENT')">
+                <div class="sidebar-section-label">Menu</div>
+                <nav class="sidebar-nav">
+                    <li><a th:href="@{/student-dashboard}" class="active"><span class="nav-icon">📊</span> Dashboard</a></li>
+                    <li><a th:href="@{/courses}"><span class="nav-icon">📚</span> Courses</a></li>
+                    <li><a th:href="@{/assignments}"><span class="nav-icon">📝</span> Assignments</a></li>
+                    <li><a th:href="@{/grades/my-grades}"><span class="nav-icon">⭐</span> Grades</a></li>
+                    <li><a th:href="@{/submissions}"><span class="nav-icon">📤</span> Submissions</a></li>
+                    <li><a th:href="@{/notifications}"><span class="nav-icon">🔔</span> Notifications</a></li>
+                </nav>
+            </div>
+            
+            <!-- Teacher Navigation -->
+            <div sec:authorize="hasRole('TEACHER')">
+                <div class="sidebar-section-label">Menu</div>
+                <nav class="sidebar-nav">
+                    <li><a th:href="@{/teacher-dashboard}" class="active"><span class="nav-icon">👨‍🏫</span> Dashboard</a></li>
+                    <li><a th:href="@{/courses}"><span class="nav-icon">📚</span> Courses</a></li>
+                    <li><a th:href="@{/assignments}"><span class="nav-icon">📝</span> Assignments</a></li>
+                    <li><a th:href="@{/teacher/submissions}"><span class="nav-icon">📥</span> Submissions</a></li>
+                    <li><a th:href="@{/notifications}"><span class="nav-icon">🔔</span> Notifications</a></li>
+                </nav>
+            </div>
+            
+            <!-- Footer -->
+            <div class="sidebar-footer">
+                <div class="sidebar-user">
+                    <div class="sidebar-avatar" th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}"></div>
+                    <div>
+                        <div class="sidebar-username" sec:authentication="name"></div>
+                        <div class="sidebar-role" sec:authorize="hasRole('STUDENT')">Student</div>
+                        <div class="sidebar-role" sec:authorize="hasRole('TEACHER')">Teacher</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Bar -->
+            <div class="topbar">
+                <button class="hamburger" id="hamburger-btn">☰</button>
+                <h1 class="topbar-title" th:text="${title}">Page</h1>
+                <div class="topbar-actions">
+                    <div class="topbar-avatar" th:text="${#strings.substring(#authentication.name, 0, 1).toUpperCase()}"></div>
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <button type="submit" class="btn btn-sm" style="background: none; color: var(--danger); border: none; cursor: pointer;">Logout</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Page Content -->
+            <div class="page-content" th:insert="${content}">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Scripts -->
+    <script>
+        // Mobile sidebar toggle
+        const hamburger = document.getElementById('hamburger-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('visible');
+            });
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('visible');
+            });
+        }
+        
+        // Auto-dismiss alerts
+        document.querySelectorAll('.alert').forEach(alert => {
+            setTimeout(() => {
+                alert.remove();
+            }, 4000);
+        });
+    </script>
+</body>
+</html>

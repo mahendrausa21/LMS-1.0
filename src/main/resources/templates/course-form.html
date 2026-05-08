@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Course | LMS Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .course-form-header {
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .course-form-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .course-form-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .course-form {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            animation: slideInUp 0.4s ease-out 0.1s both;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            background: #f9fafb;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-actions .btn {
+            min-width: 150px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 2rem 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(236, 72, 153, 0.05));
+            border-left: 4px solid var(--primary);
+            padding: 1rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .course-form {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+            }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Create Course', content=~{::#content})}">
+        <div id="content">
+            <!-- Header -->
+            <div class="course-form-header">
+                <h1>Create New Course</h1>
+                <p>Set up a new course and start engaging with your students</p>
+            </div>
+
+            <!-- Info Box -->
+            <div class="info-box">
+                <div class="info-box-title">ℹ️ Complete Your Course Information</div>
+                <div class="info-box-text">
+                    Fill in all required fields to create your course. You can edit the course details later.
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="course-form">
+                <form th:action="@{/courses/create}" th:object="${course}" method="post">
+                    <!-- Section 1: Basic Information -->
+                    <div class="form-section">
+                        <h3 class="form-section-title">Basic Information</h3>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="title">Course Title <span style="color: #dc2626;">*</span></label>
+                            <input type="text" id="title" th:field="*{title}" class="form-control" 
+                                   placeholder="e.g., Introduction to Web Development" required>
+                            <div class="form-hint">Choose a clear, descriptive title (3-100 characters)</div>
+                        </div>
+
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label for="description">Course Description <span style="color: #dc2626;">*</span></label>
+                            <textarea id="description" th:field="*{description}" class="form-control"
+                                      placeholder="Describe what students will learn..." required></textarea>
+                            <div class="form-hint">Provide a detailed description of the course content and objectives</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="duration">Duration <span style="color: #dc2626;">*</span></label>
+                            <input type="text" id="duration" th:field="*{duration}" class="form-control"
+                                   placeholder="e.g., 4 weeks or 40 hours" required>
+                            <div class="form-hint">Specify the course duration</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="level">Level <span style="color: #dc2626;">*</span></label>
+                            <select id="level" class="form-control" required>
+                                <option value="">-- Select Level --</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <a th:href="@{/teacher-dashboard}" class="btn btn-ghost">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            Create Course
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

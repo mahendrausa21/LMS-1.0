@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details | LMS Portal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .course-hero {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .course-hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-hero p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .course-meta {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .meta-label {
+            opacity: 0.8;
+            font-size: 0.85rem;
+        }
+
+        .meta-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .tabs-container {
+            margin-top: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        .content-card h3 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .content-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .content-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .empty-section {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .course-actions .btn {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .course-hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .course-meta {
+                gap: 1rem;
+            }
+
+            .section-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Course Details', content=~{::#content})}">
+        <div id="content">
+            <!-- Course Hero Section -->
+            <div class="course-hero">
+                <h1 th:text="${course?.title}">Course Title</h1>
+                <p th:text="${course?.description}">Course description goes here</p>
+                
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">🏫 Instructor</span>
+                        <span class="meta-value" th:text="${course?.teacher?.name}">Instructor Name</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">⏱️ Duration</span>
+                        <span class="meta-value" th:text="${course?.duration} + ' weeks'">12 weeks</span>
+                    </div>
+                    <div class="meta-item" sec:authorize="hasRole('TEACHER')">
+                        <span class="meta-label">👥 Enrolled</span>
+                        <span class="meta-value" th:text="${course?.students?.size() ?: 0}">24</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="course-actions" sec:authorize="hasRole('STUDENT')">
+                <a th:href="@{/enrollments/enroll?courseId={id}(id=${course?.id})}" class="btn btn-primary">📌 Enroll Now</a>
+                <a th:href="@{/courses}" class="btn btn-outline">Back to Courses</a>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('materials')">📚 Materials</button>
+                    <button class="tab-btn" onclick="switchTab('assignments')">✏️ Assignments</button>
+                    <button class="tab-btn" onclick="switchTab('students')">👥 Students</button>
+                    <button class="tab-btn" onclick="switchTab('forum')">💬 Forum</button>
+                </div>
+
+                <!-- Materials Tab -->
+                <div id="materials" class="tab-content active">
+                    <div class="section-title">📚 Course Materials</div>
+                    
+                    <div th:if="${course?.materials != null and !course?.materials.isEmpty()}" class="section-grid">
+                        <div th:each="material : ${course?.materials}" class="content-card">
+                            <h3 th:text="${material.fileName}">Material Name</h3>
+                            <div class="content-card-meta">
+                                <span th:text="${#temporals.format(material.uploadDate, 'MMM dd')}">Jan 15</span>
+                                <a th:href="@{/materials/download/{id}(id=${material.id})}" class="btn btn-primary" style="flex: none; padding: 0.3rem 0.6rem; font-size: 0.85rem;">📥</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${course?.materials == null or course?.materials.isEmpty()}" class="empty-section">
+                        <p>📭 No materials available yet.</p>
+                    </div>
+                </div>
+
+                <!-- Assignments Tab -->
+                <div id="assignments" class="tab-content">
+                    <div class="section-title">✏️ Assignments</div>
+                    
+                    <div th:if="${course?.assignments != null and !course?.assignments.isEmpty()}" class="section-grid">
+                        <div th:each="assignment : ${course?.assignments}" class="content-card">
+                            <h3 th:text="${assignment.title}">Assignment Title</h3>
+                            <p th:text="${assignment.description}">Assignment description</p>
+                            <div class="content-card-meta">
+                                <span th:text="'Due: ' + ${#dates.format(assignment.dueDate, 'MMM dd')}">Due: Jan 20</span>
+                                <a th:href="@{/assignments/{id}(id=${assignment.id})}" class="btn btn-outline" style="flex: none; padding: 0.3rem 0.6rem; font-size: 0.85rem;">View</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${course?.assignments == null or course?.assignments.isEmpty()}" class="empty-section">
+                        <p>📭 No assignments available yet.</p>
+                    </div>
+                </div>
+
+                <!-- Students Tab (Teachers only) -->
+                <div id="students" class="tab-content">
+                    <div class="section-title">👥 Enrolled Students</div>
+                    
+                    <div sec:authorize="hasRole('TEACHER')">
+                        <div th:if="${course?.students != null and !course?.students.isEmpty()}">
+                            <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="border-bottom: 2px solid var(--border-color); background: var(--bg-light);">
+                                            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-primary);">Student Name</th>
+                                            <th style="padding: 1rem; text-align: left; font-weight: 600; color: var(--text-primary);">Email</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="student : ${course?.students}" style="border-bottom: 1px solid var(--border-color);">
+                                            <td style="padding: 1rem; color: var(--text-secondary);" th:text="${student.name}">Student Name</td>
+                                            <td style="padding: 1rem; color: var(--text-secondary);" th:text="${student.email}">student@email.com</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div th:if="${course?.students == null or course?.students.isEmpty()}" class="empty-section">
+                            <p>👥 No students enrolled yet.</p>
+                        </div>
+                    </div>
+
+                    <div sec:authorize="hasRole('STUDENT')" class="empty-section">
+                        <p>🔒 Only instructors can view the student list.</p>
+                    </div>
+                </div>
+
+                <!-- Forum Tab -->
+                <div id="forum" class="tab-content">
+                    <div class="section-title">💬 Course Forum</div>
+                    <a th:href="@{/forum/course/{id}(id=${course?.id})}" class="btn btn-primary">Open Forum</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+
+      

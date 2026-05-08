@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - LMS Portal</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+</head>
+<body th:replace="~{layout :: content}">
+    <!-- Page Content -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-chart-line"></i> Dashboard
+        </h1>
+        <p class="page-subtitle">Welcome back to your learning portal</p>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="dashboard-grid">
+        <div class="stat-card">
+            <div class="stat-value" style="color: #6366f1;">12</div>
+            <div class="stat-label">Active Courses</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: #ec4899;">8</div>
+            <div class="stat-label">Pending Assignments</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: #10b981;">92%</div>
+            <div class="stat-label">Average Grade</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" style="color: #06b6d4;">24</div>
+            <div class="stat-label">Forum Posts</div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h2>Continue Your Learning Journey</h2>
+            <p>Access your courses, track progress, and achieve your educational goals</p>
+            <button class="btn btn-outline" style="border-color: white; color: white;">
+                <i class="fas fa-play-circle"></i> Browse Courses
+            </button>
+        </div>
+    </div>
+
+    <!-- Courses Section -->
+    <div style="margin-top: 2rem;">
+        <h3 style="margin-bottom: 1.5rem;">
+            <i class="fas fa-book-open"></i> Your Courses
+        </h3>
+        <div class="grid grid-3">
+            <!-- Course 1 -->
+            <div class="course-card">
+                <div class="course-card-header" style="background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);">
+                    <div class="course-code">WEB101</div>
+                    <h3 class="course-title">Web Development</h3>
+                </div>
+                <div class="course-card-body">
+                    <p class="course-description">Learn HTML, CSS, and JavaScript to build beautiful websites</p>
+                    <div class="course-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Progress</div>
+                            <div class="meta-value">65%</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Students</div>
+                            <div class="meta-value">234</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar" style="margin: 1rem 0;">
+                        <div class="progress-fill" style="width: 65%"></div>
+                    </div>
+                </div>
+                <div class="course-card-footer">
+                    <button class="btn btn-primary" style="flex: 1;">Continue Course</button>
+                </div>
+            </div>
+
+            <!-- Course 2 -->
+            <div class="course-card">
+                <div class="course-card-header" style="background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);">
+                    <div class="course-code">APP101</div>
+                    <h3 class="course-title">Mobile App Dev</h3>
+                </div>
+                <div class="course-card-body">
+                    <p class="course-description">Create native iOS and Android applications with React Native</p>
+                    <div class="course-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Progress</div>
+                            <div class="meta-value">42%</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Students</div>
+                            <div class="meta-value">156</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar" style="margin: 1rem 0;">
+                        <div class="progress-fill" style="width: 42%"></div>
+                    </div>
+                </div>
+                <div class="course-card-footer">
+                    <button class="btn btn-primary" style="flex: 1;">Continue Course</button>
+                </div>
+            </div>
+
+            <!-- Course 3 -->
+            <div class="course-card">
+                <div class="course-card-header" style="background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%);">
+                    <div class="course-code">DATA101</div>
+                    <h3 class="course-title">Data Science</h3>
+                </div>
+                <div class="course-card-body">
+                    <p class="course-description">Master Python, pandas, and machine learning fundamentals</p>
+                    <div class="course-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Progress</div>
+                            <div class="meta-value">78%</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Students</div>
+                            <div class="meta-value">189</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar" style="margin: 1rem 0;">
+                        <div class="progress-fill" style="width: 78%"></div>
+                    </div>
+                </div>
+                <div class="course-card-footer">
+                    <button class="btn btn-primary" style="flex: 1;">Continue Course</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Assignments -->
+    <div style="margin-top: 3rem;">
+        <h3 style="margin-bottom: 1.5rem;">
+            <i class="fas fa-tasks"></i> Recent Assignments
+        </h3>
+        <div class="assignment-card">
+            <div class="assignment-header">
+                <div>
+                    <h4 class="assignment-title">Build a Portfolio Website</h4>
+                    <div class="assignment-meta">
+                        <div class="assignment-meta-item">
+                            <i class="fas fa-calendar"></i> Due: Oct 30, 2024
+                        </div>
+                        <div class="assignment-meta-item">
+                            <i class="fas fa-book"></i> Web Development 101
+                        </div>
+                    </div>
+                </div>
+                <span class="badge bg-warning">Due Soon</span>
+            </div>
+            <p class="assignment-description">Create a personal portfolio website showcasing your projects and skills using HTML, CSS, and JavaScript.</p>
+            <div class="assignment-actions">
+                <button class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Submit Assignment
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+        </div>
+
+        <div class="assignment-card">
+            <div class="assignment-header">
+                <div>
+                    <h4 class="assignment-title">Python Data Analysis Project</h4>
+                    <div class="assignment-meta">
+                        <div class="assignment-meta-item">
+                            <i class="fas fa-calendar"></i> Due: Nov 15, 2024
+                        </div>
+                        <div class="assignment-meta-item">
+                            <i class="fas fa-book"></i> Data Science 101
+                        </div>
+                    </div>
+                </div>
+                <span class="badge bg-info">In Progress</span>
+            </div>
+            <p class="assignment-description">Analyze a provided dataset using pandas and create visualizations to explain your findings.</p>
+            <div class="assignment-actions">
+                <button class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Submit Assignment
+                </button>
+                <button class="btn btn-outline">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div style="margin-top: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-star" style="color: #f59e0b;"></i> Your Achievements</h4>
+            </div>
+            <div class="card-body">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #6366f1; margin-bottom: 0.5rem;">8</div>
+                    <p style="color: var(--text-secondary);">Badges Earned</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-clock" style="color: #06b6d4;"></i> Study Time</h4>
+            </div>
+            <div class="card-body">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #06b6d4; margin-bottom: 0.5rem;">42h</div>
+                    <p style="color: var(--text-secondary);">This Month</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-target" style="color: #10b981;"></i> Goals</h4>
+            </div>
+            <div class="card-body">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 2rem; font-weight: 700; color: #10b981; margin-bottom: 0.5rem;">5/8</div>
+                    <p style="color: var(--text-secondary);">Completed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

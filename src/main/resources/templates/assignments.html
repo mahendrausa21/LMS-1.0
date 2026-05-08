@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments | LMS Portal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .assignments-header {
+            margin-bottom: 2rem;
+        }
+
+        .assignments-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .assignments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .assignment-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .assignment-card.overdue {
+            border-left-color: #ef4444;
+        }
+
+        .assignment-card.due-soon {
+            border-left-color: #f59e0b;
+        }
+
+        .assignment-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .assignment-course {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .assignment-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .assignment-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .assignment-due {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .assignment-due.overdue {
+            color: #ef4444;
+        }
+
+        .assignment-due.due-soon {
+            color: #f59e0b;
+        }
+
+        .assignment-due.not-due {
+            color: #10b981;
+        }
+
+        .assignment-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .assignment-actions .btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 640px) {
+            .assignments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .assignments-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Assignments', content=~{::#content})}">
+        <div id="content">
+            <!-- Assignments Header -->
+            <div class="assignments-header">
+                <h1>📋 Assignments</h1>
+            </div>
+
+            <!-- Assignments Grid or Empty State -->
+            <div th:if="${assignments != null and !assignments.isEmpty()}">
+                <div class="assignments-grid">
+                    <div th:each="assignment : ${assignments}" 
+                        class="assignment-card"
+                        th:classappend="${(#dates.format(assignment.dueDate, 'yyyy-MM-dd') > #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? ' not-due' : ((#dates.format(assignment.dueDate, 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? ' due-soon' : ' overdue')}">
+                        
+                        <h3 class="assignment-title" th:text="${assignment.title}"></h3>
+                        <p class="assignment-course" th:text="${assignment.course?.title}"></p>
+                        <p class="assignment-description" th:text="${assignment.description}"></p>
+                        
+                        <div class="assignment-meta">
+                                <span class="assignment-due" 
+                                    th:classappend="${(#dates.format(assignment.dueDate, 'yyyy-MM-dd') > #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? ' not-due' : ((#dates.format(assignment.dueDate, 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? ' due-soon' : ' overdue')}"
+                                    th:text="${'Due: ' + #dates.format(assignment.dueDate, 'MMM dd, yyyy')}"></span>
+                                <span class="badge" 
+                                    th:classappend="${(#dates.format(assignment.dueDate, 'yyyy-MM-dd') > #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? ' bg-success' : ((#dates.format(assignment.dueDate, 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? ' bg-warning' : ' bg-danger')}"
+                                    th:text="${(#dates.format(assignment.dueDate, 'yyyy-MM-dd') > #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? 'Pending' : ((#dates.format(assignment.dueDate, 'yyyy-MM-dd') == #dates.format(#dates.createNow(), 'yyyy-MM-dd')) ? 'Today' : 'Overdue')}" ></span>
+                        </div>
+                        
+                        <div class="assignment-actions">
+                            <a th:href="@{/submissions/assignment/{id}(id=${assignment.id})}" class="btn btn-primary">Submit</a>
+                            <a th:href="@{/submissions/list?assignmentId={id}(id=${assignment.id})}" class="btn btn-outline">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${assignments == null or assignments.isEmpty()}" class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <h3>No Assignments Yet</h3>
+                <p>There are no assignments to display at the moment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Tooltip initialization could go here if needed
+    </script>
+</body>
+</html>

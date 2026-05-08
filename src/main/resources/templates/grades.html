@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades | LMS Portal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .grades-header {
+            margin-bottom: 2rem;
+        }
+
+        .grades-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .grades-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .grade-summary-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            border-top: 4px solid var(--primary);
+        }
+
+        .grade-summary-card.excellent {
+            border-top-color: #10b981;
+        }
+
+        .grade-summary-card.good {
+            border-top-color: #3b82f6;
+        }
+
+        .grade-summary-card.average {
+            border-top-color: #f59e0b;
+        }
+
+        .grade-summary-card.poor {
+            border-top-color: #ef4444;
+        }
+
+        .grade-summary-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grade-summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .grade-summary-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .grades-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .grades-table thead {
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .grades-table thead th {
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .grades-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .grades-table tbody tr:hover {
+            background: var(--bg-light);
+        }
+
+        .grade-assignment-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .grade-course {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .grade-score {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-excellent {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-good {
+            background: #dbeafe;
+            color: #0c2340;
+        }
+
+        .badge-average {
+            background: #fef3c7;
+            color: #78350f;
+        }
+
+        .badge-poor {
+            background: #fee2e2;
+            color: #7f1d1d;
+        }
+
+        .grade-feedback {
+            max-width: 300px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .grade-feedback xref {
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .expand-feedback {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .grades-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .grades-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grade-summary-value {
+                font-size: 1.5rem;
+            }
+
+            .grades-table {
+                font-size: 0.85rem;
+            }
+
+            .grades-table thead th,
+            .grades-table tbody td {
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .grades-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Grades', content=~{::#content})}">
+        <div id="content">
+            <!-- Header -->
+            <div class="grades-header">
+                <h1>📊 Your Grades</h1>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grades-summary">
+                <div class="grade-summary-card excellent">
+                    <div class="grade-summary-label">Average Grade</div>
+                    <div class="grade-summary-value" th:text="${averageGrade != null ? T(java.lang.String).format('%.1f', averageGrade) : 'N/A'}"></div>
+                    <div class="grade-summary-meta" th:text="${gradesCount != null ? gradesCount + ' Grades' : 'No Grades'}"></div>
+                </div>
+
+                <div class="grade-summary-card good">
+                    <div class="grade-summary-label">Highest Grade</div>
+                    <div class="grade-summary-value" th:text="${highestGrade != null ? highestGrade : 'N/A'}"></div>
+                    <div class="grade-summary-meta">Best Performance</div>
+                </div>
+
+                <div class="grade-summary-card average">
+                    <div class="grade-summary-label">Lowest Grade</div>
+                    <div class="grade-summary-value" th:text="${lowestGrade != null ? lowestGrade : 'N/A'}"></div>
+                    <div class="grade-summary-meta">Area to Improve</div>
+                </div>
+
+                <div class="grade-summary-card poor">
+                    <div class="grade-summary-label">Graded Assignments</div>
+                    <div class="grade-summary-value" th:text="${gradedCount != null ? gradedCount : '0'}"></div>
+                    <div class="grade-summary-meta">Completed & Evaluated</div>
+                </div>
+            </div>
+
+            <!-- Grades Table -->
+            <div class="grades-table-container">
+                <!-- Filter Bar (Optional) -->
+                <div class="filter-bar">
+                    <select onchange="filterByStatus(this.value)">
+                        <option value="">All Statuses</option>
+                        <option value="excellent">Excellent (90-100)</option>
+                        <option value="good">Good (80-89)</option>
+                        <option value="average">Average (70-79)</option>
+                        <option value="poor">Below Average (&lt;70)</option>
+                    </select>
+                </div>
+
+                <!-- Grades Table -->
+                <div th:if="${grades != null and !grades.isEmpty()}">
+                    <table class="grades-table">
+                        <thead>
+                            <tr>
+                                <th>Assignment</th>
+                                <th>Course</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                                <th>Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="grade : ${grades}">
+                                <td>
+                                    <div class="grade-assignment-name" th:text="${grade.submission?.assignment?.title}"></div>
+                                </td>
+                                <td>
+                                    <div class="grade-course" th:text="${grade.submission?.assignment?.course?.title}"></div>
+                                </td>
+                                <td>
+                                    <span class="grade-score" th:text="${grade.gradeValue}"></span>
+                                    <span>/100</span>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${grade.gradeValue >= 90} ? 'badge-excellent' : ${grade.gradeValue >= 80} ? 'badge-good' : ${grade.gradeValue >= 70} ? 'badge-average' : 'badge-poor'"
+                                          th:text="${grade.gradeValue >= 90} ? 'Excellent' : ${grade.gradeValue >= 80} ? 'Good' : ${grade.gradeValue >= 70} ? 'Average' : 'Poor'">
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="grade-feedback" 
+                                         th:if="${grade.feedback != null and !grade.feedback.isEmpty()}"
+                                         th:text="${#strings.length(grade.feedback) > 50 ? #strings.substring(grade.feedback, 0, 50) + '...' : grade.feedback}">
+                                    </div>
+                                    <div th:if="${grade.feedback == null or grade.feedback.isEmpty()}" style="color: var(--text-secondary); font-style: italic;">
+                                        No feedback provided
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${grades == null or grades.isEmpty()}" class="empty-state">
+                    <div class="empty-state-icon">📭</div>
+                    <h3>No Grades Yet</h3>
+                    <p>Your grades will appear here once your assignments are graded by your instructor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterByStatus(status) {
+            if (status === '') {
+                // Show all rows
+                document.querySelectorAll('.grades-table tbody tr').forEach(row => {
+                    row.style.display = '';
+                });
+            } else {
+                document.querySelectorAll('.grades-table tbody tr').forEach(row => {
+                    const badge = row.querySelector('.badge');
+                    const statusMap = {
+                        'excellent': 'Excellent',
+                        'good': 'Good',
+                        'average': 'Average',
+                        'poor': 'Poor'
+                    };
+                    row.style.display = badge && badge.textContent.trim() === statusMap[status] ? '' : 'none';
+                });
+            }
+        }
+    </script>
+</body>
+</html>

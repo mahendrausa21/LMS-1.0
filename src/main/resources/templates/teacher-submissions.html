@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Submissions | LMS Portal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .submissions-header {
+            margin-bottom: 2rem;
+        }
+
+        .submissions-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .submissions-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .submissions-table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .submissions-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .submissions-table thead {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .submissions-table thead th {
+            text-align: left;
+            padding: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submissions-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .submissions-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .student-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .assignment-title {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .submission-file {
+            color: var(--primary);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .submission-date {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .submission-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .submission-actions .btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-submitted {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-reviewed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 1024px) {
+            .filter-section {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .submissions-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .submissions-table {
+                font-size: 0.85rem;
+            }
+
+            .submissions-table thead th,
+            .submissions-table tbody td {
+                padding: 0.75rem;
+            }
+
+            .submission-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Student Submissions', content=~{::#content})}">
+        <div id="content">
+            <!-- Header -->
+            <div class="submissions-header">
+                <h1>📥 Student Submissions</h1>
+                <p>Review all submissions from students in your courses</p>
+            </div>
+
+            <!-- Alerts -->
+            <div th:if="${success}" class="alert alert-success" role="alert">
+                ✓ <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="alert alert-danger" role="alert">
+                ✗ <span th:text="${error}"></span>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label for="courseFilter">Filter by Course</label>
+                    <select id="courseFilter">
+                        <option value="">All Courses</option>
+                        <option th:each="course : ${courses}" th:value="${course.id}" th:text="${course.title}"></option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="statusFilter">Filter by Status</label>
+                    <select id="statusFilter">
+                        <option value="">All Status</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="reviewed">Reviewed</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Submissions Table -->
+            <div th:if="${submissions != null and !submissions.isEmpty()}" class="submissions-table-container">
+                <table class="submissions-table">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Assignment</th>
+                            <th>Submitted Date</th>
+                            <th>File</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="submission : ${submissions}" class="submission-row">
+                            <td class="student-name" th:text="${submission.student?.name}">Student Name</td>
+                            <td class="assignment-title" th:text="${submission.assignment?.title}">Assignment Title</td>
+                            <td class="submission-date" th:text="${#temporals.format(submission.submittedDate, 'MMM dd, yyyy HH:mm')}">Submitted Date</td>
+                            <td>
+                                <a th:href="@{/submissions/download/{id}(id=${submission.id})}" 
+                                   class="submission-file" 
+                                   th:text="${#strings.substringAfterLast(submission.filePath, '/')}">
+                                    file.pdf
+                                </a>
+                            </td>
+                            <td>
+                                <span class="status-badge status-submitted">Submitted</span>
+                            </td>
+                            <td class="submission-actions">
+                                <a th:href="@{/submissions/download/{id}(id=${submission.id})}" 
+                                   class="btn btn-sm btn-primary" title="Download">
+                                    📥 Download
+                                </a>
+                                <a th:href="@{/submissions/{id}/grade(id=${submission.id})}" 
+                                   class="btn btn-sm btn-primary" title="Grade">
+                                    ✏️ Grade
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${submissions == null or submissions.isEmpty()}" class="empty-state">
+                <div class="empty-state-icon">📭</div>
+                <div class="empty-state-title">No Submissions Yet</div>
+                <div class="empty-state-text">
+                    Students haven't submitted any assignments yet. Check back soon to review their work.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple filtering logic
+        const courseFilter = document.getElementById('courseFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        
+        if (courseFilter) {
+            courseFilter.addEventListener('change', filterSubmissions);
+        }
+        if (statusFilter) {
+            statusFilter.addEventListener('change', filterSubmissions);
+        }
+
+        function filterSubmissions() {
+            const rows = document.querySelectorAll('.submission-row');
+            rows.forEach(row => {
+                let show = true;
+                
+                if (courseFilter && courseFilter.value) {
+                    // Could filter by course if data-course-id was added to row
+                    // For now, just show all
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

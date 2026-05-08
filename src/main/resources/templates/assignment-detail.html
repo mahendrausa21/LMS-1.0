@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${assignment?.title} + ' - LMS'">Assignment Detail - LMS</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        .assignment-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .assignment-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .assignment-meta {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .meta-label {
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .assignment-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+        .description-text {
+            line-height: 1.8;
+            color: #555;
+            margin: 1rem 0;
+        }
+        .deadline-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #fff3cd;
+            color: #856404;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+        .due-date-warning {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #f8d7da;
+            color: #721c24;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-weight: 500;
+        }
+        .course-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        .course-link:hover {
+            background: #764ba2;
+            text-decoration: none;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #764ba2;
+            color: white;
+            text-decoration: none;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .info-card {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        .info-card-label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .info-card-value {
+            margin-top: 0.5rem;
+            color: #333;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/header"></div>
+    
+    <div class="container" style="margin-top: 2rem;">
+        <a href="javascript:history.back()" class="back-link">← Back</a>
+
+        <!-- Assignment Header -->
+        <div class="assignment-header" th:if="${assignment}">
+            <div class="assignment-title" th:text="${assignment.title}">Assignment Title</div>
+            
+            <div class="assignment-meta">
+                <div class="meta-item" th:if="${course}">
+                    <span class="meta-label">📚 Course:</span>
+                    <a th:href="@{/courses/{id}(id=${course.id})}" style="color: white; text-decoration: underline;" th:text="${course.title}">Course Name</a>
+                </div>
+                <div class="meta-item" th:if="${course?.teacher}">
+                    <span class="meta-label">👨‍🏫 Teacher:</span>
+                    <span th:text="${course.teacher.name}">Teacher Name</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert for Not Found -->
+        <div class="alert alert-danger" th:if="!${assignment}">
+            <strong>Error:</strong> Assignment not found.
+            <a href="/assignments" class="btn btn-secondary" style="margin-top: 1rem;">Back to Assignments</a>
+        </div>
+
+        <!-- Assignment Details -->
+        <div class="assignment-content" th:if="${assignment}">
+            <!-- Description Section -->
+            <div class="section-title">📝 Description</div>
+            <div class="description-text" th:text="${assignment.description}">
+                Assignment description goes here...
+            </div>
+
+            <!-- Key Information Section -->
+            <div class="section-title">ℹ️ Assignment Information</div>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-card-label">Total Points</div>
+                    <div class="info-card-value" th:text="${assignment.totalPoints + ' pts'}">100 pts</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">Due Date</div>
+                    <div class="info-card-value" th:text="${#dates.format(assignment.dueDate, 'MMM dd, yyyy')}">
+                        Due Date
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-card-label">Status</div>
+                    <div class="info-card-value">
+                        <span class="deadline-badge" th:if="${assignment.dueDate > #dates.createNow()}">📅 Open</span>
+                        <span class="due-date-warning" th:if="${assignment.dueDate <= #dates.createNow()}">⏰ Closed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions Section -->
+            <div class="section-title">📌 Instructions</div>
+            <div class="description-text">
+                <p><strong>Please follow these guidelines when submitting your assignment:</strong></p>
+                <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                    <li>Submit your work before the deadline</li>
+                    <li>Ensure all files are properly named and organized</li>
+                    <li>Include any required source files and documentation</li>
+                    <li>Late submissions may result in grade deduction</li>
+                </ul>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a th:href="@{/submissions/assignment/{id}(id=${assignment.id})}" class="btn btn-primary">
+                    📤 View Submissions
+                </a>
+                <a th:href="@{/courses/{id}(id=${course.id})}" class="btn btn-secondary">
+                    ← Back to Course
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer"></div>
+</body>
+</html>

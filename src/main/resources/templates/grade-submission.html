@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Submission | LMS Portal</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components.css}">
+    <style>
+        .grade-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .grade-header {
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .grade-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .grade-header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .grade-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .grade-form-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .grade-slider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .grade-slider input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border-color);
+            outline: none;
+        }
+
+        .grade-value-display {
+            min-width: 60px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .actions .btn {
+            min-width: 120px;
+        }
+
+        .submission-details {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .submission-details p {
+            margin: 0.5rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .submission-details strong {
+            color: var(--text-primary);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{layout/main :: layout(title='Grade Submission', content=~{::#content})}">
+        <div id="content">
+            <div class="grade-container">
+                <!-- Success/Error Messages -->
+                <div th:if="${session.flashAttributes.success}" class="alert alert-success">
+                    <strong>✓ Success:</strong> <span th:text="${session.flashAttributes.success}"></span>
+                </div>
+                <div th:if="${session.flashAttributes.error}" class="alert alert-error">
+                    <strong>✗ Error:</strong> <span th:text="${session.flashAttributes.error}"></span>
+                </div>
+
+                <!-- Header -->
+                <div class="grade-header">
+                    <h1>📝 Grade Submission</h1>
+                    <p>Evaluate and provide feedback for student submission</p>
+                </div>
+
+                <!-- Submission Information -->
+                <div class="grade-info-grid">
+                    <div class="info-card">
+                        <div class="info-label">Student</div>
+                        <div class="info-value" th:text="${student?.name}">Student Name</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Assignment</div>
+                        <div class="info-value" th:text="${assignment?.title}">Assignment</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Submitted</div>
+                        <div class="info-value" th:text="${#temporals.format(submission.submittedDate, 'MMM dd, yyyy')}">Date</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Total Points</div>
+                        <div class="info-value" th:text="${assignment?.totalPoints} + ' pts'">100 pts</div>
+                    </div>
+                </div>
+
+                <!-- Submission File Details -->
+                <div class="submission-details">
+                    <p><strong>Submitted File:</strong> <span th:text="${submission.filePath.substring(submission.filePath.lastIndexOf('/') + 1)}">filename.pdf</span></p>
+                    <p><strong>Submission Time:</strong> <span th:text="${#temporals.format(submission.submittedDate, 'MMMM dd, yyyy HH:mm')}">Date and time</span></p>
+                </div>
+
+                <!-- Grading Form -->
+                <div class="grade-form-card">
+                    <form th:action="@{/grades/assign}" method="post">
+                        <input type="hidden" name="submissionId" th:value="${submission.id}">
+                        
+                        <!-- Grade Input Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Assign Grade</div>
+                            
+                            <div class="form-group">
+                                <label for="gradeValue">Score (0-100)</label>
+                                <div class="grade-slider">
+                                    <input type="range" id="gradeRange" name="gradeRange" min="0" max="100" 
+                                           value="75" onchange="updateGradeValue(this.value)">
+                                    <input type="number" id="gradeValue" name="gradeValue" min="0" max="100" 
+                                           value="75" onchange="updateGradeRange(this.value)">
+                                    <div class="grade-value-display" id="gradeDisplay">75</div>
+                                </div>
+                                <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
+                                    Drag the slider or enter a value between 0 and 100
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Feedback (Optional)</div>
+                            
+                            <div class="form-group">
+                                <label for="feedback">Feedback for Student</label>
+                                <textarea id="feedback" name="feedback" placeholder="Provide constructive feedback about the submission..." required></textarea>
+                                <small style="color: var(--text-secondary); margin-top: 0.5rem; display: block;">
+                                    Use this space to provide detailed feedback to help the student improve
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="actions">
+                            <a th:href="@{/teacher/submissions}" class="btn btn-outline">Cancel</a>
+                            <button type="submit" class="btn btn-primary">📊 Submit Grade</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateGradeValue(value) {
+            document.getElementById('gradeValue').value = value;
+            document.getElementById('gradeDisplay').textContent = value;
+            updateGradeColor(value);
+        }
+
+        function updateGradeRange(value) {
+            if (value >= 0 && value <= 100) {
+                document.getElementById('gradeRange').value = value;
+                document.getElementById('gradeDisplay').textContent = value;
+                updateGradeColor(value);
+            }
+        }
+
+        function updateGradeColor(value) {
+            const display = document.getElementById('gradeDisplay');
+            if (value >= 90) {
+                display.style.color = '#10b981';
+                display.style.background = 'rgba(16, 185, 129, 0.1)';
+            } else if (value >= 80) {
+                display.style.color = '#3b82f6';
+                display.style.background = 'rgba(59, 130, 246, 0.1)';
+            } else if (value >= 70) {
+                display.style.color = '#f59e0b';
+                display.style.background = 'rgba(245, 158, 11, 0.1)';
+            } else if (value >= 60) {
+                display.style.color = '#ec4899';
+                display.style.background = 'rgba(236, 72, 153, 0.1)';
+            } else {
+                display.style.color = '#ef4444';
+                display.style.background = 'rgba(239, 68, 68, 0.1)';
+            }
+        }
+
+        // Initialize color on page load
+        updateGradeColor(document.getElementById('gradeValue').value);
+    </script>
+</body>
+</html>
